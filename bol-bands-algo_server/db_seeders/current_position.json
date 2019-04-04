@@ -1,0 +1,1 @@
+{ "entry_price": 150, "exit_price": 160, "stop_loss": 158, "action": "BUY", "entry_date": { "$date": "0001-04-19T00:00:00Z" }, "exit_date": null, "percentage_profit": null, "is_open": true, "outcome": null }

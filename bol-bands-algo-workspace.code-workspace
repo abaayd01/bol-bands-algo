@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "bol-bands-algo_server"
+		},
+		{
+			"path": "bol-bands-algo_flask"
+		},
+		{
+			"path": "documentation"
+		}
+	],
+	"settings": {}
+}
