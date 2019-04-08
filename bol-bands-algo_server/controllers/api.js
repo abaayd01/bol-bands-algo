@@ -6,13 +6,10 @@ const Position = require("../models/Position");
  */
 exports.evaluate = async (req, res) => {
     const price = parseFloat(req.query.price);
-    console.log(price);
     const openPositions = false;
     // const openPositions = await Position.getOpenPositions();
 
-    console.log(openPositions);
     if (openPositions) {
-        const currentPosition = openPositions[0];
         axios
             .post("http://127.0.0.1:5000/api/evaluate-position", {
                 price: price,
@@ -43,4 +40,5 @@ exports.evaluate = async (req, res) => {
                 res.send({ error: true });
             });
     }
+
 };
