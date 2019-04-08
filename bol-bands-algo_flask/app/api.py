@@ -18,7 +18,7 @@ def evaluate_price():
             6. Evaluate position using current price data
     '''
     mongo = get_db()
-    historical_price_data = mongo.db.price_data.find().sort(
+    historical_price_data = mongo.db.priceSnapshots.find().sort(
         'date', pymongo.DESCENDING)[1:50]
 
     request_payload = request.get_json()
@@ -32,7 +32,7 @@ def evaluate_price():
 @bp.route('/evaluate-position', methods=('GET', 'POST'))
 def evaluate_position():
     mongo = get_db()
-    historical_price_data = mongo.db.price_data.find().sort(
+    historical_price_data = mongo.db.priceSnapshots.find().sort(
         'date', pymongo.DESCENDING)[1:50]
 
     request_payload = request.get_json()
