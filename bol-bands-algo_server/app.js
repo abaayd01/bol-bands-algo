@@ -80,14 +80,14 @@ if (process.env.NODE_ENV === "development") {
 }
 
 // run once a day
-cron.schedule("0 0 * * *", async () => {
-    cryptoCompareInterface.takeSnapshot();
-});
+// cron.schedule("0 0 * * *", async () => {
+//     cryptoCompareInterface.takeSnapshot();
+// });
 
 // run once every hour
-cron.schedule("* * */1 * *", async () => {
-    priceEvaluationTaskRunner.evaluatePrice();
-});
+// cron.schedule("* * */1 * *", async () => {
+//     priceEvaluationTaskRunner.evaluatePrice();
+// });
 
 /**
  * Start Express server.
