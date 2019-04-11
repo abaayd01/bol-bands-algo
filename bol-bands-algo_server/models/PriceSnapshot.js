@@ -7,7 +7,7 @@ const priceSnapshotSchema = new mongoose.Schema(
         price: Number,
         volume: Number
     },
-    { timestamps: true }
+    { timestamps: true, collection: "priceSnapshots" }
 );
 
 const PriceSnapshot = mongoose.model("PriceSnapshot", priceSnapshotSchema);
