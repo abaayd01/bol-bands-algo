@@ -3,6 +3,12 @@ const Position = require("../models/Position");
 const PriceSnapshot = require("@models/PriceSnapshot");
 const cryptoCompareInterface = require("@lib/CryptoCompareInterface");
 
+exports.test = async (req, res) => {
+    res.send({
+        message: 'hello from nodejs'
+    });
+};
+
 /**
  * POST /api/evaluate
  */

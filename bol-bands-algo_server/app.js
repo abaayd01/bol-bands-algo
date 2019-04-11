@@ -64,6 +64,7 @@ app.use(expressValidator());
 /**
  * API examples routes.
  */
+app.get("/api/test", apiController.test);
 app.post("/api/evaluate", apiController.evaluate);
 app.post("/api/snapshot", apiController.snapshot);
 

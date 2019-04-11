@@ -5,7 +5,8 @@
     "main": "",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "publish:flask": "git subtree push --prefix bol-bands-algo_flask heroku-flask master || true"
+        "publish:flask": "git subtree push --prefix bol-bands-algo_flask heroku-flask master || true",
+        "publish:server": "git subtree push --prefix bol-bands-algo_server heroku-server master || true"
     },
     "repository": {
         "type": "git",
