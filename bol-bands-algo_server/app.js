@@ -13,8 +13,6 @@ const expressValidator = require("express-validator");
 const expressStatusMonitor = require("express-status-monitor");
 const cron = require("node-cron");
 
-require("module-alias/register");
-
 const cryptoCompareInterface = require("@lib/CryptoCompareInterface");
 const priceEvaluationTaskRunner = require("@lib/PriceEvaluationTaskRunner");
 /**
