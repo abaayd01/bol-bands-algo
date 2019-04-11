@@ -45,3 +45,10 @@ def evaluate_position():
         price_df, current_price, current_position)
 
     return jsonify(result)
+
+
+@bp.route('/test', methods=('GET'))
+def test():
+    return {
+        'message': 'hello from flask!'
+    }
