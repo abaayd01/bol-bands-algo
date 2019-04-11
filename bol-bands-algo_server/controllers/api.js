@@ -13,7 +13,7 @@ exports.evaluate = async (req, res) => {
 
     if (openPositions) {
         axios
-            .post("http://127.0.0.1:5000/api/evaluate-position", {
+            .post(`${process.env.FLASK_BASE_URL}/evaluate-position`, {
                 price: price,
                 current_position: currentPosition
             })
@@ -28,7 +28,7 @@ exports.evaluate = async (req, res) => {
             });
     } else {
         axios
-            .post("http://127.0.0.1:5000/api/evaluate-price", {
+            .post(`${process.env.FLASK_BASE_URL}/evaluate-price`, {
                 price
             })
             .then(function(response) {
