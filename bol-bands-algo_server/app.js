@@ -85,7 +85,7 @@ cron.schedule("0 0 * * *", async () => {
 });
 
 // run once every hour
-cron.schedule("* * */1 * *", async () => {
+cron.schedule("0 0 */1 * *", async () => {
     priceEvaluationTaskRunner.evaluatePrice();
 });
 
