@@ -6,10 +6,19 @@ from flask import Flask
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        SECRET_KEY='dev',
-        # MONGO_URI="mongodb://localhost:27017/bolBandsDB"
-    )
+
+    is_prod = os.environ.getenv('IS_HEROKU', None)
+
+    if is_prod:
+        app.config.from_mapping(
+            SECRET_KEY='dev',
+            MONGO_URI=os.environ.get('MONGO_URI')
+        )
+    else:
+        app.config.from_mapping(
+            SECRET_KEY='dev',
+            MONGO_URI="mongodb://localhost:27017/bolBandsDB"
+        )
 
     # mongo = PyMongo(app)
 
