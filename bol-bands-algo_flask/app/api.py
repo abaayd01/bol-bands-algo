@@ -47,7 +47,7 @@ def evaluate_position():
     return jsonify(result)
 
 
-@bp.route('/test', methods=('GET'))
+@bp.route('/test', methods=('GET', 'POST'))
 def test():
     return {
         'message': 'hello from flask!'
