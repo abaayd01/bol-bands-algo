@@ -1,0 +1,20 @@
+{
+    "name": "bol-bands-algo",
+    "version": "1.0.0",
+    "description": "Implementation of a Bollinger Bands trading algorithm.",
+    "main": "",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "publish:flask": "git subtree push --prefix bol-bands-algo_flask heroku-flask master || true"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/abaayd01/bol-bands-algo.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/abaayd01/bol-bands-algo/issues"
+    },
+    "homepage": "https://github.com/abaayd01/bol-bands-algo#readme"
+}
