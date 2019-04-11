@@ -7,7 +7,7 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
 
-    is_prod = os.environ.getenv('IS_HEROKU', None)
+    is_prod = os.environ.get('IS_HEROKU', None)
 
     if is_prod:
         app.config.from_mapping(
