@@ -1,14 +1,17 @@
 {
 	"folders": [
-		{
-			"path": "bol-bands-algo_server"
-		},
-		{
-			"path": "bol-bands-algo_flask"
-		},
-		{
-			"path": "documentation"
-		}
-	],
+        {
+            "path": "bol-bands-algo_server"
+        },
+        {
+            "path": "bol-bands-algo_flask"
+        },
+        {
+            "path": "documentation"
+        },
+        {
+            "path": "bol-bands-algo_client"
+        }
+    ],
 	"settings": {}
 }
