@@ -1,0 +1,7 @@
+#import "./PositionFragment.gql"
+
+query {
+    positions {
+        ...position
+    }
+}

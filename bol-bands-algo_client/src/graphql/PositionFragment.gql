@@ -1,0 +1,12 @@
+fragment position on Position {
+    _id
+    entry_price
+    exit_price
+    stop_loss
+    action
+    entry_date
+    exit_date
+    percentage_profit
+    is_open
+    outcome
+}

@@ -1,16 +1,13 @@
 {
-  "name": "hackathon-starter",
+  "name": "bol-bands-algo",
   "version": "5.1.2",
-  "description": "A boilerplate for Node.js web applications",
+  "description": "An implementation of Boillinger Bands Algo.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/sahat/hackathon-starter.git"
+    "url": ""
   },
   "license": "MIT",
-  "author": "Sahat Yalkabov",
-  "contributors": [
-    "Yashar Fakhari (https://github.com/YasharF)"
-  ],
+  "author": "Ayden Aba",
   "scripts": {
     "postinstall": "npm rebuild node-sass && link-module-alias",
     "start": "node index.js",
