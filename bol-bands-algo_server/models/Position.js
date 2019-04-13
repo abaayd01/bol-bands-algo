@@ -23,6 +23,6 @@ positionSchema.statics.getOpenPositions = async function () {
     return openPositions;
 };
 
-const Position = mongoose.model('Position', positionSchema);
+const Position = mongoose.model('Position', positionSchema, 'positions');
 
 module.exports = Position;
