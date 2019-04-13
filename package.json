@@ -17,5 +17,6 @@
     "bugs": {
         "url": "https://github.com/abaayd01/bol-bands-algo/issues"
     },
-    "homepage": "https://github.com/abaayd01/bol-bands-algo#readme"
+    "homepage": "https://github.com/abaayd01/bol-bands-algo#readme",
+    "dependencies": {}
 }
