@@ -56,6 +56,7 @@ export const typeDefs = gql`
 
     type Subscription {
         positionAdded: Position
+        positionUpdated: Position
         positionDeleted: PositionId
     }
 `;
@@ -95,13 +96,19 @@ export const resolvers = {
             }
         },
         updatePosition: async (_, { positionId, input }) => {
-            return await Position.findOneAndUpdate(
+            const updatedPosition = await Position.findOneAndUpdate(
                 { _id: positionId },
                 {
                     ...input
                 },
                 { new: true }
             );
+
+            pubSub.publish(POSITION_UPDATED, {
+                positionUpdated: updatedPosition
+            });
+
+            return updatedPosition;
         },
         deletePosition: async (_, { positionId }) => {
             try {
@@ -125,6 +132,9 @@ export const resolvers = {
     Subscription: {
         positionAdded: {
             subscribe: () => pubSub.asyncIterator([POSITION_ADDED])
+        },
+        positionUpdated: {
+            subscribe: () => pubSub.asyncIterator([POSITION_UPDATED])
         },
         positionDeleted: {
             subscribe: () => pubSub.asyncIterator([POSITION_DELETED])

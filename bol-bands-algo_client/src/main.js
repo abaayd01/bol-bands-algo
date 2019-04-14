@@ -10,6 +10,9 @@ import Vuetify from "vuetify";
 import App from "./App.vue";
 import 'vuetify/dist/vuetify.min.css' // Ensure you are using css-loader
 
+import DatetimePicker from "vuetify-datetime-picker";
+import VueMoment from 'vue-moment';
+
 Vue.config.productionTip = false;
 
 const httpLink = new HttpLink({
@@ -44,6 +47,9 @@ const apolloProvider = new VueApollo({
 
 Vue.use(VueApollo);
 Vue.use(Vuetify);
+
+Vue.use(DatetimePicker);
+Vue.use(VueMoment);
 
 new Vue({
     apolloProvider,

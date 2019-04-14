@@ -1,9 +1,5 @@
 mutation CreatePositionMutation($input: PositionInput) {
-    createPosition(
-        input: $input 
-    ) {
+    createPosition(input: $input) {
         _id
-        entry_price
-        action
     }
 }

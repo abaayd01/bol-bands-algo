@@ -1,0 +1,5 @@
+mutation UpdatePositionMutation($positionId: String, $input: PositionInput) {
+    updatePosition(positionId: $positionId, input: $input) {
+        _id
+    }
+}

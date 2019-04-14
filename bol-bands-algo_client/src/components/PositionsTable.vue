@@ -6,22 +6,22 @@
             <v-spacer></v-spacer>
             <v-dialog v-model="dialog" max-width="500px">
                 <template v-slot:activator="{ on }">
-                    <v-btn color="info" @click="open">New Position</v-btn>
+                    <v-btn color="info" @click="openCreateItem">New Position</v-btn>
                 </template>
                 <v-card>
                     <v-card-title>
-                        <span class="headline">{{ formTitle }}</span>
+                        <span class="headline">{{ form_title }}</span>
                     </v-card-title>
 
                     <v-card-text>
                         <v-container grid-list-md>
-                            <!-- <v-datetime-picker label="Entry Date" v-model="entryDate"></v-datetime-picker> -->
-                            <v-text-field label="Entry Price" type="number"></v-text-field>
-                            <v-text-field label="Exit Price" type="number"></v-text-field>
-                            <v-text-field label="Stop Loss" type="number"></v-text-field>
+                            <v-datetime-picker label="Entry Date" v-model="entry_date"></v-datetime-picker>
+                            <v-text-field label="Entry Price" type="number" v-model="entry_price"></v-text-field>
+                            <v-text-field label="Exit Price" type="number" v-model="exit_price"></v-text-field>
+                            <v-text-field label="Stop Loss" type="number" v-model="stop_loss"></v-text-field>
 
                             <span class="subheading grey--text text--darken-1">Action Type</span>
-                            <v-radio-group v-model="actionType">
+                            <v-radio-group v-model="action_type">
                                 <v-radio label="BUY" value="BUY"></v-radio>
                                 <v-radio label="SELL" value="SELL"></v-radio>
                             </v-radio-group>
@@ -31,7 +31,14 @@
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
-                        <v-btn color="blue darken-1" flat @click="save">Save</v-btn>
+
+                        <v-btn
+                            v-if="mode == 'ADD'"
+                            color="blue darken-1"
+                            flat
+                            @click="createNew"
+                        >Add</v-btn>
+                        <v-btn v-else color="blue darken-1" flat @click="saveChanges">Save</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -39,13 +46,13 @@
 
         <v-data-table :headers="headers" :items="positions">
             <template v-slot:items="props">
-                <td>{{ props.item.entry_date }}</td>
+                <td>{{ props.item.entry_date | moment('YYYY-MM-DD hh:mm') }}</td>
                 <td>{{ props.item.entry_price }}</td>
                 <td>{{ props.item.exit_price }}</td>
                 <td>{{ props.item.stop_loss }}</td>
                 <td>{{ props.item.action }}</td>
                 <td class="justify-center layout px-0">
-                    <v-icon small class="mr-2" @click="editItem(props.item)">edit</v-icon>
+                    <v-icon small class="mr-2" @click="openEditItem(props.item)">edit</v-icon>
                     <v-icon small @click="deleteItem(props.item)">delete</v-icon>
                 </td>
             </template>
@@ -54,13 +61,15 @@
 </template>
 
 <script>
-    import _ from 'lodash';
+    import _ from "lodash";
     import PositionsQuery from "../graphql/Positions.gql";
 
     import CreatePositionMutation from "../graphql/PositionCreate.gql";
+    import UpdatePositionMutation from "../graphql/PositionUpdate.gql";
     import DeletePositionMutation from "../graphql/PositionDelete.gql";
 
     import PositionAddedSubscription from "../graphql/PositionAddedSubscription.gql";
+    import PositionUpdatedSubscription from "../graphql/PositionUpdatedSubscription.gql";
     import PositionDeletedSubscription from "../graphql/PositionDeletedSubscription.gql";
 
     export default {
@@ -86,16 +95,42 @@
                         }
                     },
                     {
+                        document: PositionUpdatedSubscription,
+                        updateQuery: (previous, { subscriptionData }) => {
+                            const updatedPosition =
+                                subscriptionData.data.positionUpdated;
+                            const updatedPositionId = updatedPosition._id;
+
+                            const newPositions = previous.positions.map(
+                                position => {
+                                    if (position._id === updatedPositionId) {
+                                        return updatedPosition;
+                                    }
+
+                                    return position;
+                                }
+                            );
+
+                            return {
+                                ...previous,
+                                positions: newPositions
+                            };
+                        }
+                    },
+                    {
                         document: PositionDeletedSubscription,
                         updateQuery: (previous, { subscriptionData }) => {
                             const deletedPositionId =
                                 subscriptionData.data.positionDeleted._id;
 
-                            const newPositions = [ ...previous.positions ];
+                            const newPositions = [...previous.positions];
 
-                            const indexToDelete = _.findIndex(newPositions, position => {
-                                return position._id == deletedPositionId;
-                            });
+                            const indexToDelete = _.findIndex(
+                                newPositions,
+                                position => {
+                                    return position._id == deletedPositionId;
+                                }
+                            );
 
                             newPositions.splice(indexToDelete, 1);
 
@@ -118,18 +153,47 @@
                 { text: "", value: "" }
             ],
             dialog: false,
-            formTitle: "Create New Position",
-            entryDate: Date.now(),
-            actionType: "BUY" // BUY, SELL
+            mode: "ADD", // ADD, EDIT
+            positionId: null, // if EDIT, id of positionEditing
+            form_title: "Create New Position",
+            entry_date: new Date().toISOString(),
+            entry_price: 0,
+            exit_price: 0,
+            stop_loss: 0,
+            action_type: "BUY" // BUY, SELL
         }),
         methods: {
-            open() {
+            resetForm() {
+                this.positionId = null;
+                this.entry_date = new Date().toISOString();
+                this.entry_price = 0;
+                this.exit_price = 0;
+                this.stop_loss = 0;
+                this.action_type = "BUY";
+            },
+            openCreateItem() {
+                this.mode = "ADD";
+                this.dialog = true;
+            },
+            openEditItem(item) {
+                const positionId = item._id;
+                this.mode = "EDIT";
+                this.positionId = positionId;
+                this.form_title = "Edit Position";
+
+                this.entry_date = item.entry_date;
+                this.entry_price = item.entry_price;
+                this.exit_price = item.exit_price;
+                this.stop_loss = item.stop_loss;
+                this.action_type = item.action;
+
                 this.dialog = true;
             },
             close() {
                 this.dialog = false;
+                setTimeout(this.resetForm, 500);
             },
-            save() {
+            createNew() {
                 this.createPosition();
                 this.close();
             },
@@ -138,11 +202,30 @@
                     mutation: CreatePositionMutation,
                     variables: {
                         input: {
-                            entry_date: new Date().toISOString(),
-                            entry_price: 999,
-                            exit_price: 999,
-                            stop_loss: 666,
-                            action: "BUY"
+                            entry_date: this.entry_date,
+                            entry_price: parseFloat(this.entry_price),
+                            exit_price: parseFloat(this.exit_price),
+                            stop_loss: parseFloat(this.stop_loss),
+                            action: this.action_type
+                        }
+                    }
+                });
+            },
+            saveChanges() {
+                this.updatePosition();
+                this.close();
+            },
+            updatePosition() {
+                this.$apollo.mutate({
+                    mutation: UpdatePositionMutation,
+                    variables: {
+                        positionId: this.positionId,
+                        input: {
+                            entry_date: this.entry_date,
+                            entry_price: parseFloat(this.entry_price),
+                            exit_price: parseFloat(this.exit_price),
+                            stop_loss: parseFloat(this.stop_loss),
+                            action: this.action_type
                         }
                     }
                 });
