@@ -54,12 +54,34 @@
 </template>
 
 <script>
+    import PositionAddedSubscription from "../graphql/PositionAddedSubscription.gql";
     import PositionsQuery from "../graphql/Positions.gql";
     import CreatePositionMutation from "../graphql/PositionCreate.gql";
 
     export default {
         apollo: {
-            positions: PositionsQuery
+            positions: {
+                query: PositionsQuery,
+                update(queryData) {
+                    return queryData.positions;
+                },
+                subscribeToMore: [
+                    {
+                        document: PositionAddedSubscription,
+                        updateQuery: (previous, { subscriptionData }) => {
+                            const newPositions = [
+                                ...previous.positions,
+                                subscriptionData.data.positionAdded
+                            ];
+
+                            return {
+                                ...previous,
+                                positions: newPositions
+                            };
+                        }
+                    }
+                ]
+            }
         },
         data: () => ({
             headers: [
@@ -88,16 +110,16 @@
             },
             async createPosition() {
                 this.$apollo.mutate({
-					mutation: CreatePositionMutation,
-					variables: {
-						input: {
-							entry_date: new Date().toISOString(),
-							entry_price: 999,
-							exit_price: 999,
-							stop_loss: 666,
-							action: "BUY"
-						}
-					}
+                    mutation: CreatePositionMutation,
+                    variables: {
+                        input: {
+                            entry_date: new Date().toISOString(),
+                            entry_price: 999,
+                            exit_price: 999,
+                            stop_loss: 666,
+                            action: "BUY"
+                        }
+                    }
                 });
             }
         }

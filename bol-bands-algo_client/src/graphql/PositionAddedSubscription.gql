@@ -1,0 +1,7 @@
+#import "./PositionFragment.gql"
+
+subscription PositionAdded {
+    positionAdded {
+        ...position
+    }
+}
