@@ -1,7 +1,7 @@
-#import "./PositionFragment.gql"
-
-mutation {
-    createPosition(input: position) {
+mutation CreatePositionMutation($input: PositionInput) {
+    createPosition(
+        input: $input 
+    ) {
         _id
         entry_price
         action
