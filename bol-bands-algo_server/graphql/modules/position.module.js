@@ -1,6 +1,9 @@
-import Position from '@models/Position';
-import gql from 'graphql-tag';
-import { GraphQLDateTime } from 'graphql-iso-date';
+import Position from "@models/Position";
+import gql from "graphql-tag";
+import { GraphQLDateTime } from "graphql-iso-date";
+import { PubSub } from "apollo-server-express";
+
+const pubSub = new PubSub();
 
 // position.module.js
 export const typeDefs = gql`
@@ -42,6 +45,10 @@ export const typeDefs = gql`
 
         deletePosition(positionId: String): String
     }
+
+    type Subscription {
+        positionAdded: Position
+    }
 `;
 
 export const resolvers = {
@@ -67,7 +74,9 @@ export const resolvers = {
             });
 
             try {
-                return await newPosition.save();
+                await newPosition.save();
+                pubSub.publish("POSITION_ADDED", { positionAdded: newPosition });
+                return newPosition;
             } catch (err) {
                 throw err;
             }
@@ -86,8 +95,14 @@ export const resolvers = {
                 await Position.findOneAndDelete({ _id: positionId });
                 return positionId;
             } catch (err) {
-                return 'err';
+                return "err";
             }
+        }
+    },
+
+    Subscription: {
+        positionAdded: {
+            subscribe: () => pubSub.asyncIterator(["POSITION_ADDED"])
         }
     }
 };

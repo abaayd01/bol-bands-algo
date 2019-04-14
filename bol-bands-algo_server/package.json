@@ -55,6 +55,7 @@
     "popper.js": "^1.14.7",
     "pug": "^2.0.3",
     "request": "^2.88.0",
+    "subscriptions-transport-ws": "^0.9.16",
     "tar": "^4.4.8",
     "validator": "^10.11.0"
   },

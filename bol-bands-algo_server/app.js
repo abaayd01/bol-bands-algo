@@ -1,33 +1,39 @@
 /**
  * Module dependencies.
  */
-const express = require('express');
-const compression = require('compression');
-const bodyParser = require('body-parser');
-const logger = require('morgan');
-const chalk = require('chalk');
-const errorHandler = require('errorhandler');
-const dotenv = require('dotenv');
-const mongoose = require('mongoose');
-const expressValidator = require('express-validator');
-const expressStatusMonitor = require('express-status-monitor');
-const { ApolloServer, gql } = require('apollo-server-express');
-const { schema } = require('./graphql/schema');
+const express = require("express");
+const compression = require("compression");
+const bodyParser = require("body-parser");
+const logger = require("morgan");
+const chalk = require("chalk");
+const errorHandler = require("errorhandler");
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
+const expressValidator = require("express-validator");
+const expressStatusMonitor = require("express-status-monitor");
 
-const cron = require('node-cron');
+import { createServer } from 'http';
+import cors from "cors";
 
-const cryptoCompareInterface = require('@lib/CryptoCompareInterface');
-const priceEvaluationTaskRunner = require('@lib/PriceEvaluationTaskRunner');
+import { ApolloServer } from "apollo-server-express";
+import { schema } from "./graphql/schema";
+import { execute, subscribe } from "graphql";
+import { SubscriptionServer } from "subscriptions-transport-ws";
+
+const cron = require("node-cron");
+
+const cryptoCompareInterface = require("@lib/CryptoCompareInterface");
+const priceEvaluationTaskRunner = require("@lib/PriceEvaluationTaskRunner");
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
  */
-dotenv.load({ path: '.env' });
+dotenv.load({ path: ".env" });
 
 /**
  * Controllers (route handlers).
  */
 // const homeController = require('./controllers/home');
-const apiController = require('./controllers/api');
+const apiController = require("./controllers/api");
 
 /**
  * Create Express server.
@@ -37,55 +43,62 @@ const app = express();
 /**
  * Connect to MongoDB.
  */
-mongoose.set('useFindAndModify', false);
-mongoose.set('useCreateIndex', true);
-mongoose.set('useNewUrlParser', true);
+mongoose.set("useFindAndModify", false);
+mongoose.set("useCreateIndex", true);
+mongoose.set("useNewUrlParser", true);
 mongoose.connect(process.env.MONGODB_URI);
-mongoose.connection.on('error', err => {
+mongoose.connection.on("error", err => {
     console.error(err);
-    console.log('%s MongoDB connection error. Please make sure MongoDB is running.', chalk.red('✗'));
+    console.log(
+        "%s MongoDB connection error. Please make sure MongoDB is running.",
+        chalk.red("✗")
+    );
     process.exit();
 });
 
 /**
  * Express configuration.
  */
-app.set('host', process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0');
-app.set('port', process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080);
+app.set("host", process.env.OPENSHIFT_NODEJS_IP || "0.0.0.0");
+app.set("port", process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080);
 app.use(expressStatusMonitor());
 app.use(compression());
-app.use(logger('dev'));
+app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(expressValidator());
+app.use(cors());
 
 /**
  * GraphQL configuration
  */
-const server = new ApolloServer({ schema });
+const apolloServer = new ApolloServer({ schema });
 
-server.applyMiddleware({ app });
+apolloServer.applyMiddleware({ app });
+
+const httpServer = createServer(app);
+apolloServer.installSubscriptionHandlers(httpServer);
 
 /**
  * API examples routes.
  */
-app.get('/api/test', apiController.test);
+app.get("/api/test", apiController.test);
 
-app.post('/api/evaluate', apiController.evaluate);
-app.post('/api/snapshot', apiController.snapshot);
+app.post("/api/evaluate", apiController.evaluate);
+app.post("/api/snapshot", apiController.snapshot);
 
 /** Position CRUD */
 
 /**
  * Error Handler.
  */
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === "development") {
     // only use in development
     app.use(errorHandler());
 } else {
     app.use((err, req, res, next) => {
         console.error(err);
-        res.status(500).send('Server Error');
+        res.status(500).send("Server Error");
     });
 }
 
@@ -102,14 +115,14 @@ if (process.env.NODE_ENV === 'development') {
 /**
  * Start Express server.
  */
-app.listen(app.get('port'), () => {
+httpServer.listen(app.get("port"), () => {
     console.log(
-        '%s App is running at http://localhost:%d in %s mode',
-        chalk.green('✓'),
-        app.get('port'),
-        app.get('env')
+        "%s App is running at http://localhost:%d in %s mode",
+        chalk.green("✓"),
+        app.get("port"),
+        app.get("env")
     );
-    console.log('  Press CTRL-C to stop\n');
+    console.log("  Press CTRL-C to stop\n");
 });
 
 // module.exports = app;
