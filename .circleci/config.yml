@@ -1,0 +1,15 @@
+version: 2
+jobs:
+    build:
+        docker:
+            - image: circleci/node:lts
+            - image: circleci/mongo
+        steps:
+            - checkout
+            - setup_remote_docker:
+                  docker_layer_caching: true
+            - run:
+                  name: Build and push Docker image
+                  command: |
+                      cd ./bol-bands-algo_server
+                      docker build --tag=bol-bands-algo_server .
