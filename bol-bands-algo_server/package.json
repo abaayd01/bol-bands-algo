@@ -78,7 +78,7 @@
     "npm": ">=5.6.0"
   },
   "_moduleAliases": {
-    "@lib": "lib",
-    "@models": "models"
+    "@lib": "./lib",
+    "@models": "./models"
   }
 }

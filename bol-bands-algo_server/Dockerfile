@@ -1,14 +1,16 @@
-FROM node:8-slim
+FROM node:10
 
-WORKDIR /starter
+WORKDIR /server
 ENV NODE_ENV development
 
-COPY package.json /starter/package.json
+COPY package.json /server/package.json
 
 RUN npm install --production
 
-COPY .env.example /starter/.env.example
-COPY . /starter
+COPY .env /app/.env
+COPY . /server
+
+RUN npm run postinstall
 
 CMD ["npm","start"]
 
