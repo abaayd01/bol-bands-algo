@@ -54,9 +54,14 @@
 </template>
 
 <script>
-    import PositionAddedSubscription from "../graphql/PositionAddedSubscription.gql";
+    import _ from 'lodash';
     import PositionsQuery from "../graphql/Positions.gql";
+
     import CreatePositionMutation from "../graphql/PositionCreate.gql";
+    import DeletePositionMutation from "../graphql/PositionDelete.gql";
+
+    import PositionAddedSubscription from "../graphql/PositionAddedSubscription.gql";
+    import PositionDeletedSubscription from "../graphql/PositionDeletedSubscription.gql";
 
     export default {
         apollo: {
@@ -79,6 +84,26 @@
                                 positions: newPositions
                             };
                         }
+                    },
+                    {
+                        document: PositionDeletedSubscription,
+                        updateQuery: (previous, { subscriptionData }) => {
+                            const deletedPositionId =
+                                subscriptionData.data.positionDeleted._id;
+
+                            const newPositions = [ ...previous.positions ];
+
+                            const indexToDelete = _.findIndex(newPositions, position => {
+                                return position._id == deletedPositionId;
+                            });
+
+                            newPositions.splice(indexToDelete, 1);
+
+                            return {
+                                ...previous,
+                                positions: newPositions
+                            };
+                        }
                     }
                 ]
             }
@@ -95,7 +120,7 @@
             dialog: false,
             formTitle: "Create New Position",
             entryDate: Date.now(),
-            actionType: "BUY" // 1 == BUY, 2 == SELL
+            actionType: "BUY" // BUY, SELL
         }),
         methods: {
             open() {
@@ -104,11 +129,11 @@
             close() {
                 this.dialog = false;
             },
-            async save() {
-                await this.createPosition();
+            save() {
+                this.createPosition();
                 this.close();
             },
-            async createPosition() {
+            createPosition() {
                 this.$apollo.mutate({
                     mutation: CreatePositionMutation,
                     variables: {
@@ -119,6 +144,18 @@
                             stop_loss: 666,
                             action: "BUY"
                         }
+                    }
+                });
+            },
+            deleteItem(item) {
+                const positionId = item._id;
+                this.deletePosition(positionId);
+            },
+            deletePosition(positionId) {
+                this.$apollo.mutate({
+                    mutation: DeletePositionMutation,
+                    variables: {
+                        positionId
                     }
                 });
             }

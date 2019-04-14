@@ -5,6 +5,10 @@ import { PubSub } from "apollo-server-express";
 
 const pubSub = new PubSub();
 
+const POSITION_ADDED = "POSITION_ADDED";
+const POSITION_DELETED = "POSITION_DELETED";
+const POSITION_UPDATED = "POSITION_UPDATED";
+
 // position.module.js
 export const typeDefs = gql`
     scalar DateTime
@@ -19,6 +23,10 @@ export const typeDefs = gql`
         percentage_profit: Float
         is_open: Boolean
         outcome: String
+    }
+
+    type PositionId {
+        _id: String
     }
 
     type Position {
@@ -43,11 +51,12 @@ export const typeDefs = gql`
         createPosition(input: PositionInput): Position
         updatePosition(positionId: String, input: PositionInput): Position
 
-        deletePosition(positionId: String): String
+        deletePosition(positionId: String): PositionId
     }
 
     type Subscription {
         positionAdded: Position
+        positionDeleted: PositionId
     }
 `;
 
@@ -75,7 +84,11 @@ export const resolvers = {
 
             try {
                 await newPosition.save();
-                pubSub.publish("POSITION_ADDED", { positionAdded: newPosition });
+
+                pubSub.publish(POSITION_ADDED, {
+                    positionAdded: newPosition
+                });
+
                 return newPosition;
             } catch (err) {
                 throw err;
@@ -93,7 +106,16 @@ export const resolvers = {
         deletePosition: async (_, { positionId }) => {
             try {
                 await Position.findOneAndDelete({ _id: positionId });
-                return positionId;
+
+                pubSub.publish(POSITION_DELETED, {
+                    positionDeleted: {
+                        _id: positionId
+                    }
+                });
+
+                return {
+                    _id: positionId
+                };
             } catch (err) {
                 return "err";
             }
@@ -102,7 +124,10 @@ export const resolvers = {
 
     Subscription: {
         positionAdded: {
-            subscribe: () => pubSub.asyncIterator(["POSITION_ADDED"])
+            subscribe: () => pubSub.asyncIterator([POSITION_ADDED])
+        },
+        positionDeleted: {
+            subscribe: () => pubSub.asyncIterator([POSITION_DELETED])
         }
     }
 };
