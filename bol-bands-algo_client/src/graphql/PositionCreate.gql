@@ -1,0 +1,9 @@
+#import "./PositionFragment.gql"
+
+mutation {
+    createPosition(input: position) {
+        _id
+        entry_price
+        action
+    }
+}
