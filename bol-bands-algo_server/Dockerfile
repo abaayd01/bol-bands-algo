@@ -7,7 +7,7 @@ COPY package.json /server/package.json
 
 RUN npm install --production
 
-COPY .env /app/.env
+# COPY .env /app/.env
 COPY . /server
 
 RUN npm run postinstall
