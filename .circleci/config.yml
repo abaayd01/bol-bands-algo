@@ -5,18 +5,19 @@ jobs:
             - image: circleci/node:lts
             - image: circleci/mongo
         steps:
+            - checkout
             - setup_remote_docker:
                   docker_layer_caching: true
             - add_ssh_keys:
                   fingerprints:
                       - "ed:ee:e4:4d:0e:fc:a6:d2:ad:e1:e3:67:62:c1:4f:cf"
-            - checkout
             - run:
                   name: Build and push Docker image
                   command: |
-                      docker build ./bol-bands-algo_server
-                      docker login -u $DOCKER_USER -p $DOCKER_PASS
-                      docker push abaayd/bol-bands-algo_server:@latest
+                      TAG=0.1.$CIRCLE_BUILD_NUM
+                      docker build -t abaayd/bol-bands-algo_server:$TAG ./bol-bands-algo_server
+                      docker login -u $DOCKER_USER --password-stdin $DOCKER_PASS
+                      docker push abaayd/bol-bands-algo_server:$TAG
             - run:
                   name: SSH into droplet test
                   command: |
