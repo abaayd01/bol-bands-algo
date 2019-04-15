@@ -5,10 +5,18 @@ jobs:
             - image: circleci/node:lts
             - image: circleci/mongo
         steps:
+            - add_ssh_keys:
+                fingerprints:
+                    - "ed:ee:e4:4d:0e:fc:a6:d2:ad:e1:e3:67:62:c1:4f:cf"
             - checkout
-            - setup_remote_docker:
-                  docker_layer_caching: true
             - run:
-                  name: Build and push Docker image
-                  command: |
-                    docker-compose build
+                name: SSH into droplet test
+                run: |
+                    ssh -v root@$DROPLET_IP "cd /root; ./deploy.sh"
+                    
+            # - setup_remote_docker:
+            #       docker_layer_caching: true
+            # - run:
+            #       name: Build and push Docker image
+            #       command: |
+            #         docker-compose build
