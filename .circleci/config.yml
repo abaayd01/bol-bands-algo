@@ -12,7 +12,7 @@ jobs:
             - run:
                 name: SSH into droplet test
                 command: |
-                    ssh -v root@$DROPLET_IP "cd /root; ./deploy.sh"
+                    ssh -oStrictHostKeyChecking=no -v root@$DROPLET_IP "cd /root; ./deploy.sh"
                     
             # - setup_remote_docker:
             #       docker_layer_caching: true
