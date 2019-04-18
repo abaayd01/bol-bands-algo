@@ -1,14 +1,24 @@
-version: "3"
+version: "3.4"
 services:
-    mongo:
-        image: mongo
-    web:
-        image: abaayd/bol-bands-algo_server:$TAG
+    # mongo:
+    #     image: mongo
+				this is pretty cool
+    # server:
+    #     image: abaayd/bol-bands-algo_server:$TAG
+    #     ports:
+    #         - "8080:8080"
+    #     environment:
+    #         - MONGODB_URI=${MONGODB_URI}
+    #     links:
+    #         - mongo
+    #     depends_on:
+    #         - mongo
+    client:
+        # image: abaayd/bol-bands-algo_client:$TAG
+        build:
+            context: ./bol-bands-algo_client
+            target: dev
         ports:
             - "8080:8080"
-        environment:
-            - MONGODB_URI=${MONGODB_URI}
-        links:
-            - mongo
-        depends_on:
-            - mongo
+        volumes:
+            - ./bol-bands-algo_client/src:/app/src
