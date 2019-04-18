@@ -3,7 +3,6 @@ jobs:
     build:
         docker:
             - image: circleci/node:lts
-            - image: circleci/mongo
         steps:
             - checkout
             - setup_remote_docker:
