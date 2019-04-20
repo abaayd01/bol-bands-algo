@@ -11,6 +11,12 @@ jobs:
                   fingerprints:
                       - "ed:ee:e4:4d:0e:fc:a6:d2:ad:e1:e3:67:62:c1:4f:cf"
             - run:
+                  name: Create client .env.production file
+                  command: |
+                    echo VUE_APP_HTTP_SERVER_URI=$VUE_APP_HTTP_SERVER_URI >> ./bol-bands-algo_client/env.production
+                    echo VUE_APP_WS_SERVER_URI=$VUE_APP_WS_SERVER_URI >> ./bol-bands-algo_client/env.production
+                    cat ./bol-bands-algo_client/env.production
+            - run:
                   name: Build and push Docker images
                   command: |
                       TAG=0.1.$CIRCLE_BUILD_NUM
@@ -23,4 +29,4 @@ jobs:
                   name: SSH into droplet
                   command: |
                       TAG=0.1.$CIRCLE_BUILD_NUM
-                      ssh -oStrictHostKeyChecking=no -v root@$DROPLET_IP "cd /root; export VUE_APP_HTTP_SERVER_URI=$VUE_APP_HTTP_SERVER_URI; export VUE_APP_WS_SERVER_URI=$VUE_APP_WS_SERVER_URI; export MONGODB_URI=$MONGODB_URI; export TAG=$TAG; ./deploy.sh"
+                      ssh -oStrictHostKeyChecking=no -v root@$DROPLET_IP "cd /root; export MONGODB_URI=$MONGODB_URI; export TAG=$TAG; ./deploy.sh"
