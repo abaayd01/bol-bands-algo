@@ -16,11 +16,11 @@ import VueMoment from 'vue-moment';
 Vue.config.productionTip = false;
 
 const httpLink = new HttpLink({
-    uri: "http://localhost:8080/graphql"
+    uri: `${process.env.VUE_APP_HTTP_SERVER_URI}/graphql`
 });
 
 const wsLink = new WebSocketLink({
-    uri: "ws://localhost:8080/graphql",
+    uri: `${process.env.VUE_APP_WS_SERVER_URI}/graphql`,
     options: {
         reconnect: true
     }
