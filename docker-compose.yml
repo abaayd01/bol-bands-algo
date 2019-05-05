@@ -1,25 +1,31 @@
 version: "3.4"
 services:
-    mongo:
-        image: mongo
-    server:
-        image: abaayd/bol-bands-algo_server:$TAG
-        ports:
-            - "8080:8080"
-        environment:
-            - MONGODB_URI=${MONGODB_URI}
-        links:
-            - mongo
-        depends_on:
-            - mongo
-    client:
-        build:
-            context: ./bol-bands-algo_client
-            target: dev
-        ports:
-            - "8081:8080"
-        environment:
-            - VUE_APP_HTTP_SERVER_URI=${VUE_APP_HTTP_SERVER_URI}
-            - VUE_APP_WS_SERVER_URI=${VUE_APP_WS_SERVER_URI}
-        volumes:
-            - ./bol-bands-algo_client/src:/app/src
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+  server:
+    build:
+      context: ./bol-bands-algo_server
+      target: dev
+    ports:
+      - "8080:8080"
+    environment:
+      - MONGODB_URI=${MONGODB_URI}
+    links:
+      - mongo
+    depends_on:
+      - mongo
+    volumes:
+      - ./bol-bands-algo_server:/server
+  client:
+    build:
+      context: ./bol-bands-algo_client
+      target: dev
+    ports:
+      - "8081:8080"
+    environment:
+      - VUE_APP_HTTP_SERVER_URI=http://localhost:8080
+      - VUE_APP_WS_SERVER_URI=ws://localhost:8080
+    volumes:
+      - ./bol-bands-algo_client/src:/app/src

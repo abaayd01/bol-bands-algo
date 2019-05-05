@@ -1,18 +1,15 @@
-import Position from "@models/Position";
-import gql from "graphql-tag";
-import { GraphQLDateTime } from "graphql-iso-date";
-import { PubSub } from "apollo-server-express";
+import Position from '@models/Position'
+import gql from 'graphql-tag'
+import {PubSub} from 'apollo-server-express'
 
 const pubSub = new PubSub();
 
-const POSITION_ADDED = "POSITION_ADDED";
-const POSITION_DELETED = "POSITION_DELETED";
-const POSITION_UPDATED = "POSITION_UPDATED";
+const POSITION_ADDED = 'POSITION_ADDED';
+const POSITION_DELETED = 'POSITION_DELETED';
+const POSITION_UPDATED = 'POSITION_UPDATED';
 
 // position.module.js
 export const typeDefs = gql`
-    scalar DateTime
-
     input PositionInput {
         entry_price: Float
         exit_price: Float
@@ -59,85 +56,77 @@ export const typeDefs = gql`
         positionUpdated: Position
         positionDeleted: PositionId
     }
-`;
+`
 
 export const resolvers = {
-    DateTime: GraphQLDateTime,
+	Query: {
+		positions: async () => await Position.find({}),
+		position: async (_, {positionId}) => await Position.findOne({_id: positionId})
+	},
 
-    Query: {
-        positions: async () => {
-            return await Position.find({});
-        },
-        position: async (_, { positionId }) => {
-            return await Position.findOne({ _id: positionId });
-        }
-    },
+	Mutation: {
+		createPosition: async (_, {input}) => {
+			const newPosition = new Position({
+				...input,
+				exit_date: null,
+				percentage_profit: null,
+				is_open: true,
+				outcome: null
+			});
 
-    Mutation: {
-        createPosition: async (_, { input }) => {
-            const newPosition = new Position({
-                ...input,
-                exit_date: null,
-                percentage_profit: null,
-                is_open: true,
-                outcome: null
-            });
+			try {
+				await newPosition.save();
 
-            try {
-                await newPosition.save();
+				pubSub.publish(POSITION_ADDED, {
+					positionAdded: newPosition
+				});
 
-                pubSub.publish(POSITION_ADDED, {
-                    positionAdded: newPosition
-                });
+				return newPosition
+			} catch (err) {
+				throw err
+			}
+		},
+		updatePosition: async (_, {positionId, input}) => {
+			const updatedPosition = await Position.findOneAndUpdate({_id: positionId},
+				{
+					...input
+				},
+				{new: true})
 
-                return newPosition;
-            } catch (err) {
-                throw err;
-            }
-        },
-        updatePosition: async (_, { positionId, input }) => {
-            const updatedPosition = await Position.findOneAndUpdate(
-                { _id: positionId },
-                {
-                    ...input
-                },
-                { new: true }
-            );
+			pubSub.publish(POSITION_UPDATED, {
+				positionUpdated: updatedPosition
+			});
 
-            pubSub.publish(POSITION_UPDATED, {
-                positionUpdated: updatedPosition
-            });
+			return updatedPosition
+		},
+		deletePosition: async (_, {positionId}) => {
+			try {
+				await Position.findOneAndDelete({_id: positionId})
 
-            return updatedPosition;
-        },
-        deletePosition: async (_, { positionId }) => {
-            try {
-                await Position.findOneAndDelete({ _id: positionId });
+				pubSub.publish(POSITION_DELETED, {
+					positionDeleted: {
+						_id: positionId
+					}
+				});
 
-                pubSub.publish(POSITION_DELETED, {
-                    positionDeleted: {
-                        _id: positionId
-                    }
-                });
+				return {
+					_id: positionId
+				}
+			} catch (err) {
+				return 'err'
+			}
+		}
+	},
 
-                return {
-                    _id: positionId
-                };
-            } catch (err) {
-                return "err";
-            }
-        }
-    },
-
-    Subscription: {
-        positionAdded: {
-            subscribe: () => pubSub.asyncIterator([POSITION_ADDED])
-        },
-        positionUpdated: {
-            subscribe: () => pubSub.asyncIterator([POSITION_UPDATED])
-        },
-        positionDeleted: {
-            subscribe: () => pubSub.asyncIterator([POSITION_DELETED])
-        }
-    }
+	Subscription: {
+		positionAdded: {
+			subscribe: () => pubSub.asyncIterator([POSITION_ADDED])
+		},
+		positionUpdated: {
+			subscribe: () => pubSub.asyncIterator([POSITION_UPDATED])
+		},
+		positionDeleted: {
+			subscribe: () => pubSub.asyncIterator([POSITION_DELETED])
+		}
+	}
 };

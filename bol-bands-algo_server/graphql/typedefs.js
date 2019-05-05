@@ -28,6 +28,6 @@ const typeDefs = `
       postId: Int!
     ): Post
   }
-`;
+`
 
-exports.typeDefs = typeDefs;
+exports.typeDefs = typeDefs
