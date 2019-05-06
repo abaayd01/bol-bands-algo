@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const priceEvaluationSchema = new mongoose.Schema(
 	{
 		action: String,
+		eval_price: Number,
 		entry_date: Date,
 		entry_price: Number,
 		exit_date: Number,
@@ -15,6 +16,6 @@ const priceEvaluationSchema = new mongoose.Schema(
 	{timestamps: true, collection: 'priceEvaluations'}
 );
 
-const PriceEvaluation = mongoose.model('PriceEvaluation', priceEvaluationSchema)
+const PriceEvaluation = mongoose.model('PriceEvaluation', priceEvaluationSchema);
 
 module.exports = PriceEvaluation;
