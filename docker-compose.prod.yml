@@ -2,6 +2,17 @@ version: "3.4"
 services:
     mongo:
         image: mongo
+    flask:
+        image: abaayd/bol-bands-algo_flask:$TAG
+        ports:
+            - "8000:8000"
+        environment:
+            - MONGODB_URI=${MONGODB_URI}
+            - FLASK_ENV=production
+        links:
+            - mongo
+        depends_on:
+            - mongo
     server:
         image: abaayd/bol-bands-algo_server:$TAG
         ports:

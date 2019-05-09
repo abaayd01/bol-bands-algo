@@ -9,7 +9,6 @@ COPY . .
 FROM base as dev
 CMD ["npm", "run", "serve"]
 
-
 # build stage
 FROM base as build
 RUN npm run build

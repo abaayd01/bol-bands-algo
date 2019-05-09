@@ -7,12 +7,12 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
 
-    is_prod = os.environ.get('IS_HEROKU', None)
+    FLASK_ENV = os.environ.get('FLASK_ENV', None)
 
-    if is_prod:
+    if FLASK_ENV == 'production':
         app.config.from_mapping(
-            SECRET_KEY='dev',
-            MONGO_URI=os.environ.get('MONGO_URI')
+            SECRET_KEY='prod',
+            MONGO_URI=os.environ.get('MONGODB_URI')
         )
     else:
         app.config.from_mapping(

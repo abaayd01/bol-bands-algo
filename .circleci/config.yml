@@ -20,9 +20,11 @@ jobs:
                   name: Build and push Docker images
                   command: |
                       TAG=0.1.$CIRCLE_BUILD_NUM
-                      docker build -t abaayd/bol-bands-algo_server:$TAG -t abaayd/bol-bands-algo_server:latest ./bol-bands-algo_server
+                      docker build --target prod -t abaayd/bol-bands-algo_flask:$TAG -t abaayd/bol-bands-algo_flask:latest ./bol-bands-algo_flask
+                      docker build --target prod -t abaayd/bol-bands-algo_server:$TAG -t abaayd/bol-bands-algo_server:latest ./bol-bands-algo_server
                       docker build --target prod -t abaayd/bol-bands-algo_client:$TAG -t abaayd/bol-bands-algo_client:latest ./bol-bands-algo_client
                       docker login -u $DOCKER_USER -p $DOCKER_PASS
+                      docker push abaayd/bol-bands-algo_flask
                       docker push abaayd/bol-bands-algo_server
                       docker push abaayd/bol-bands-algo_client
             - run:
