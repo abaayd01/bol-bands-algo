@@ -19,10 +19,13 @@ services:
             - "8080:8080"
         environment:
             - MONGODB_URI=${MONGODB_URI}
+            - FLASK_BASE_URL=http://flask:8000/api
         links:
             - mongo
+            - flask
         depends_on:
             - mongo
+            - flask
     client:
         image: abaayd/bol-bands-algo_client:$TAG
         ports:

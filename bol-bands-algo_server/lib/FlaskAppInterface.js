@@ -2,8 +2,9 @@ const axios = require('axios');
 
 const evaluatePrice = async price => {
 	try {
+		console.log('evaluating price');
 		const response = await axios.post(
-			`${process.env.FLASK_BASE_URL_DEV}/evaluate-price`,
+			`${process.env.FLASK_BASE_URL}/evaluate-price`,
 			{
 				price
 			}
@@ -18,9 +19,9 @@ const evaluatePrice = async price => {
 		return {
 			success: false,
 			data: null,
-			error
+			err
 		}
 	}
-}
+};
 
 exports.evaluatePrice = evaluatePrice;

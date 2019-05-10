@@ -4,6 +4,22 @@ services:
     image: mongo
     ports:
       - "27017:27017"
+  flask:
+    build:
+      context: ./bol-bands-algo_flask
+      target: dev
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/bolBandsDB
+      - FLASK_ENV=development
+      - FLASK_APP=app
+    links:
+      - mongo
+    depends_on:
+      - mongo
+    volumes:
+      - ./bol-bands-algo_flask:/bol-bands-algo_flask
   server:
     build:
       context: ./bol-bands-algo_server
@@ -11,11 +27,14 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - MONGODB_URI=${MONGODB_URI}
+      - MONGODB_URI=mongodb://mongo:27017/bolBandsDB
+      - FLASK_BASE_URL=http://flask:5000/api
     links:
       - mongo
+      - flask
     depends_on:
       - mongo
+      - flask
     volumes:
       - ./bol-bands-algo_server:/server
   client:

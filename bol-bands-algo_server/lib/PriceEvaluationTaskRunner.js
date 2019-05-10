@@ -10,7 +10,7 @@ const evaluatePrice = async () => {
 			currentPrice
 		);
 
-		console.log('flaskAppResponse', flaskAppResponse);
+		// console.log('flaskAppResponse', flaskAppResponse);
 		const priceEvaluation = flaskAppResponse.data;
 
 		if (priceEvaluation !== null) {

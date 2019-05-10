@@ -17,7 +17,7 @@ def create_app(test_config=None):
     else:
         app.config.from_mapping(
             SECRET_KEY='dev',
-            MONGO_URI="mongodb://localhost:27017/bolBandsDB"
+            MONGO_URI="mongodb://mongo:27017/bolBandsDB"
         )
 
     # mongo = PyMongo(app)
