@@ -37,6 +37,9 @@ services:
       - flask
     volumes:
       - ./bol-bands-algo_server:/server
+      - ./bol-bands-algo_server/models:/server/models
+      - ./bol-bands-algo_server/lib:/server/lib
+      - ./bol-bands-algo_server/graphql:/server/graphql
   client:
     build:
       context: ./bol-bands-algo_client
