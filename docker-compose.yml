@@ -20,6 +20,8 @@ services:
       - mongo
     volumes:
       - ./bol-bands-algo_flask:/bol-bands-algo_flask
+      - ./bol-bands-algo_flask/app:/bol-bands-algo_flask/app
+      - ./bol-bands-algo_flask/app/bol_bands_algo:/bol-bands-algo_flask/app/bol_bands_algo
   server:
     build:
       context: ./bol-bands-algo_server

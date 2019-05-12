@@ -6,6 +6,7 @@ import cors from 'cors'
 
 import {ApolloServer} from 'apollo-server-express'
 import {schema} from './graphql/schema'
+import Position from './models/Position';
 
 const express = require('express');
 const compression = require('compression');
@@ -17,8 +18,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const expressValidator = require('express-validator');
 const expressStatusMonitor = require('express-status-monitor');
-
-// const cron = require('node-cron')
+const cron = require('node-cron')
 // ;
 //
 // const cryptoCompareInterface = require('@lib/CryptoCompareInterface');
@@ -105,10 +105,14 @@ if (process.env.NODE_ENV === 'development') {
 // });
 
 // run once every hour
-// cron.schedule("0 0 */1 * *", async () => {
-// 	await priceEvaluationTaskRunner.evaluatePrice();
+// run once every hour
+cron.schedule("0 0 */1 * *", async () => {
+	await priceEvaluationTaskRunner.evaluatePrice();
+});
+priceEvaluationTaskRunner.evaluatePrice();
+// Position.findOne().sort({'entry_date': 'descending'}).exec().then(async currentPosition => {
+// 	await priceEvaluationTaskRunner.evaluatePosition(currentPosition);
 // });
-// priceEvaluationTaskRunner.evaluatePrice();
 
 /**
  * Start Express server.
@@ -124,4 +128,4 @@ httpServer.listen(app.get('port'), () => {
 	console.log('  Press CTRL-C to stop\n');
 });
 
-// module.exports = app;
+

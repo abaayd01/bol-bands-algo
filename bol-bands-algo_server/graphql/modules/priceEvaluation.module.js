@@ -5,24 +5,24 @@ const flaskAppInterface = require('@lib/FlaskAppInterface');
 
 // priceEvaluation.module.js
 export const typeDefs = gql`
-    type PriceEvaluation {
-        _id: String,
+	type PriceEvaluation {
+		_id: String,
 		action: String,
 		price: Float,
 		date: DateTime,
 		entry_price: Float,
 		exit_price: Float,
 		stop_loss: Float
-    }
+	}
 
-    extend type Query {
-        priceEvaluation(id: String): PriceEvaluation
-        priceEvaluations: [PriceEvaluation]
-    }
+	extend type Query {
+		priceEvaluation(id: String): PriceEvaluation
+		priceEvaluations: [PriceEvaluation]
+	}
 
-    extend type Mutation {
-        evaluatePrice(price: Float): PriceEvaluation
-    }
+	extend type Mutation {
+		evaluatePrice(price: Float): PriceEvaluation
+	}
 `;
 
 export const resolvers = {

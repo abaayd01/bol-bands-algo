@@ -36,13 +36,13 @@ def evaluate_position():
         'date', pymongo.DESCENDING)[1:50]
 
     request_payload = request.get_json()
-    current_position = request_payload['current_position']
+    position = request_payload['position']
     current_price = request_payload['price']
 
     price_df = bol_bands_algo.create_df(historical_price_data)
 
     result = bol_bands_algo.evaluate_position(
-        price_df, current_price, current_position)
+        price_df, current_price, position)
 
     return jsonify(result)
 
