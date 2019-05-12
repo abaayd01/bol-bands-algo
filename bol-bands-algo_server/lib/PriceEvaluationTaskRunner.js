@@ -6,6 +6,7 @@ const evaluatePrice = async () => {
 	try {
 		const cryptoCompareResponse = await cryptoCompareInterface.fetchCurrentPrice();
 		const currentPrice = cryptoCompareResponse['USD'];
+
 		const flaskAppResponse = await flaskAppInterface.evaluatePrice(
 			currentPrice
 		);

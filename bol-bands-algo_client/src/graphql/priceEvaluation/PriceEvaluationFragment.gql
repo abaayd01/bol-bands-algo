@@ -1,0 +1,9 @@
+fragment priceEvaluation on PriceEvaluation {
+    _id
+    action
+    price
+    date
+    entry_price
+    exit_price
+    stop_loss
+}

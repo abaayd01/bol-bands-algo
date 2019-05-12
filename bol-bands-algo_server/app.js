@@ -22,7 +22,7 @@ const expressStatusMonitor = require('express-status-monitor');
 // ;
 //
 // const cryptoCompareInterface = require('@lib/CryptoCompareInterface');
-// const priceEvaluationTaskRunner = require('@lib/PriceEvaluationTaskRunner');
+const priceEvaluationTaskRunner = require('@lib/PriceEvaluationTaskRunner');
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
  */
@@ -86,8 +86,6 @@ app.get('/api/test', apiController.test);
 app.post('/api/evaluate', apiController.evaluate);
 app.post('/api/snapshot', apiController.snapshot);
 
-/** Position CRUD */
-
 /**
  * Error Handler.
  */
@@ -108,7 +106,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // run once every hour
 // cron.schedule("0 0 */1 * *", async () => {
-	// await priceEvaluationTaskRunner.evaluatePrice();
+// 	await priceEvaluationTaskRunner.evaluatePrice();
 // });
 // priceEvaluationTaskRunner.evaluatePrice();
 

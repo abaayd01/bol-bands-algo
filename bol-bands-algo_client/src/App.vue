@@ -2,19 +2,28 @@
     <v-app dark>
         <v-content>
             <v-container align-content-center>
-                <positions-table></positions-table>
+                <v-layout row>
+                    <v-flex grow pr-2>
+                        <price-evaluations-table></price-evaluations-table>
+                    </v-flex>
+                    <v-flex shrink pl-2>
+                        <positions-table></positions-table>
+                    </v-flex>
+                </v-layout>
             </v-container>
         </v-content>
     </v-app>
 </template>
 
 <script>
-    import PositionsTable from "./components/PositionsTable.vue";
+	import PositionsTable from "./components/PositionsTable.vue";
+	import PriceEvaluationsTable from "./components/PriceEvaluationsTable.vue";
 
-    export default {
-        name: "App",
-        components: {
-            PositionsTable
-        }
-    };
+	export default {
+		name: "App",
+		components: {
+			PositionsTable,
+			PriceEvaluationsTable
+		}
+	};
 </script>

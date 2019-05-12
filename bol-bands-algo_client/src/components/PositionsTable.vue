@@ -1,4 +1,4 @@
-<template>
+<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
     <div>
         <v-toolbar flat>
             <v-toolbar-title>Positions</v-toolbar-title>
@@ -33,11 +33,12 @@
                         <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
 
                         <v-btn
-                            v-if="mode == 'ADD'"
-                            color="blue darken-1"
-                            flat
-                            @click="createNew"
-                        >Add</v-btn>
+                                v-if="mode === 'ADD'"
+                                color="blue darken-1"
+                                flat
+                                @click="createNew"
+                        >Add
+                        </v-btn>
                         <v-btn v-else color="blue darken-1" flat @click="saveChanges">Save</v-btn>
                     </v-card-actions>
                 </v-card>
@@ -61,189 +62,189 @@
 </template>
 
 <script>
-    import _ from "lodash";
-    import PositionsQuery from "../graphql/Positions.gql";
+	import _ from "lodash";
+	import PositionsQuery from "../graphql/position/Positions.gql";
 
-    import CreatePositionMutation from "../graphql/PositionCreate.gql";
-    import UpdatePositionMutation from "../graphql/PositionUpdate.gql";
-    import DeletePositionMutation from "../graphql/PositionDelete.gql";
+	import CreatePositionMutation from "../graphql/position/PositionCreate.gql";
+	import UpdatePositionMutation from "../graphql/position/PositionUpdate.gql";
+	import DeletePositionMutation from "../graphql/position/PositionDelete.gql";
 
-    import PositionAddedSubscription from "../graphql/PositionAddedSubscription.gql";
-    import PositionUpdatedSubscription from "../graphql/PositionUpdatedSubscription.gql";
-    import PositionDeletedSubscription from "../graphql/PositionDeletedSubscription.gql";
+	import PositionAddedSubscription from "../graphql/position/PositionAddedSubscription.gql";
+	import PositionUpdatedSubscription from "../graphql/position/PositionUpdatedSubscription.gql";
+	import PositionDeletedSubscription from "../graphql/position/PositionDeletedSubscription.gql";
 
-    export default {
-        apollo: {
-            positions: {
-                query: PositionsQuery,
-                update(queryData) {
-                    return queryData.positions;
-                },
-                subscribeToMore: [
-                    {
-                        document: PositionAddedSubscription,
-                        updateQuery: (previous, { subscriptionData }) => {
-                            const newPositions = [
-                                ...previous.positions,
-                                subscriptionData.data.positionAdded
-                            ];
+	export default {
+		apollo: {
+			positions: {
+				query: PositionsQuery,
+				update(queryData) {
+					return queryData.positions;
+				},
+				subscribeToMore: [
+					{
+						document: PositionAddedSubscription,
+						updateQuery: (previous, {subscriptionData}) => {
+							const newPositions = [
+								...previous.positions,
+								subscriptionData.data.positionAdded
+							];
 
-                            return {
-                                ...previous,
-                                positions: newPositions
-                            };
-                        }
-                    },
-                    {
-                        document: PositionUpdatedSubscription,
-                        updateQuery: (previous, { subscriptionData }) => {
-                            const updatedPosition =
-                                subscriptionData.data.positionUpdated;
-                            const updatedPositionId = updatedPosition._id;
+							return {
+								...previous,
+								positions: newPositions
+							};
+						}
+					},
+					{
+						document: PositionUpdatedSubscription,
+						updateQuery: (previous, {subscriptionData}) => {
+							const updatedPosition =
+								subscriptionData.data.positionUpdated;
+							const updatedPositionId = updatedPosition._id;
 
-                            const newPositions = previous.positions.map(
-                                position => {
-                                    if (position._id === updatedPositionId) {
-                                        return updatedPosition;
-                                    }
+							const newPositions = previous.positions.map(
+								position => {
+									if (position._id === updatedPositionId) {
+										return updatedPosition;
+									}
 
-                                    return position;
-                                }
-                            );
+									return position;
+								}
+							);
 
-                            return {
-                                ...previous,
-                                positions: newPositions
-                            };
-                        }
-                    },
-                    {
-                        document: PositionDeletedSubscription,
-                        updateQuery: (previous, { subscriptionData }) => {
-                            const deletedPositionId =
-                                subscriptionData.data.positionDeleted._id;
+							return {
+								...previous,
+								positions: newPositions
+							};
+						}
+					},
+					{
+						document: PositionDeletedSubscription,
+						updateQuery: (previous, {subscriptionData}) => {
+							const deletedPositionId =
+								subscriptionData.data.positionDeleted._id;
 
-                            const newPositions = [...previous.positions];
+							const newPositions = [...previous.positions];
 
-                            const indexToDelete = _.findIndex(
-                                newPositions,
-                                position => {
-                                    return position._id == deletedPositionId;
-                                }
-                            );
+							const indexToDelete = _.findIndex(
+								newPositions,
+								position => {
+									return position._id === deletedPositionId;
+								}
+							);
 
-                            newPositions.splice(indexToDelete, 1);
+							newPositions.splice(indexToDelete, 1);
 
-                            return {
-                                ...previous,
-                                positions: newPositions
-                            };
-                        }
-                    }
-                ]
-            }
-        },
-        data: () => ({
-            headers: [
-                { text: "Entry Date", value: "entry_date" },
-                { text: "Entry Price", value: "entry_price" },
-                { text: "Exit Price", value: "exit_price" },
-                { text: "Stop Loss", value: "stop_loss" },
-                { text: "Action", value: "action" },
-                { text: "", value: "" }
-            ],
-            dialog: false,
-            mode: "ADD", // ADD, EDIT
-            positionId: null, // if EDIT, id of positionEditing
-            form_title: "Create New Position",
-            entry_date: new Date().toISOString(),
-            entry_price: 0,
-            exit_price: 0,
-            stop_loss: 0,
-            action_type: "BUY" // BUY, SELL
-        }),
-        methods: {
-            resetForm() {
-                this.positionId = null;
-                this.entry_date = new Date().toISOString();
-                this.entry_price = 0;
-                this.exit_price = 0;
-                this.stop_loss = 0;
-                this.action_type = "BUY";
-            },
-            openCreateItem() {
-                this.mode = "ADD";
-                this.dialog = true;
-            },
-            openEditItem(item) {
-                const positionId = item._id;
-                this.mode = "EDIT";
-                this.positionId = positionId;
-                this.form_title = "Edit Position";
+							return {
+								...previous,
+								positions: newPositions
+							};
+						}
+					}
+				]
+			}
+		},
+		data: () => ({
+			headers: [
+				{text: "Entry Date", value: "entry_date"},
+				{text: "Entry Price", value: "entry_price"},
+				{text: "Exit Price", value: "exit_price"},
+				{text: "Stop Loss", value: "stop_loss"},
+				{text: "Action", value: "action"},
+				{text: "", value: ""}
+			],
+			dialog: false,
+			mode: "ADD", // ADD, EDIT
+			positionId: null, // if EDIT, id of positionEditing
+			form_title: "Create New Position",
+			entry_date: new Date().toISOString(),
+			entry_price: 0,
+			exit_price: 0,
+			stop_loss: 0,
+			action_type: "BUY" // BUY, SELL
+		}),
+		methods: {
+			resetForm() {
+				this.positionId = null;
+				this.entry_date = new Date().toISOString();
+				this.entry_price = 0;
+				this.exit_price = 0;
+				this.stop_loss = 0;
+				this.action_type = "BUY";
+			},
+			openCreateItem() {
+				this.mode = "ADD";
+				this.dialog = true;
+			},
+			openEditItem(item) {
+				const positionId = item._id;
+				this.mode = "EDIT";
+				this.positionId = positionId;
+				this.form_title = "Edit Position";
 
-                this.entry_date = item.entry_date;
-                this.entry_price = item.entry_price;
-                this.exit_price = item.exit_price;
-                this.stop_loss = item.stop_loss;
-                this.action_type = item.action;
+				this.entry_date = item.entry_date;
+				this.entry_price = item.entry_price;
+				this.exit_price = item.exit_price;
+				this.stop_loss = item.stop_loss;
+				this.action_type = item.action;
 
-                this.dialog = true;
-            },
-            close() {
-                this.dialog = false;
-                setTimeout(this.resetForm, 500);
-            },
-            createNew() {
-                this.createPosition();
-                this.close();
-            },
-            createPosition() {
-                this.$apollo.mutate({
-                    mutation: CreatePositionMutation,
-                    variables: {
-                        input: {
-                            entry_date: this.entry_date,
-                            entry_price: parseFloat(this.entry_price),
-                            exit_price: parseFloat(this.exit_price),
-                            stop_loss: parseFloat(this.stop_loss),
-                            action: this.action_type
-                        }
-                    }
-                });
-            },
-            saveChanges() {
-                this.updatePosition();
-                this.close();
-            },
-            updatePosition() {
-                this.$apollo.mutate({
-                    mutation: UpdatePositionMutation,
-                    variables: {
-                        positionId: this.positionId,
-                        input: {
-                            entry_date: this.entry_date,
-                            entry_price: parseFloat(this.entry_price),
-                            exit_price: parseFloat(this.exit_price),
-                            stop_loss: parseFloat(this.stop_loss),
-                            action: this.action_type
-                        }
-                    }
-                });
-            },
-            deleteItem(item) {
-                const positionId = item._id;
-                this.deletePosition(positionId);
-            },
-            deletePosition(positionId) {
-                this.$apollo.mutate({
-                    mutation: DeletePositionMutation,
-                    variables: {
-                        positionId
-                    }
-                });
-            }
-        }
-    };
+				this.dialog = true;
+			},
+			close() {
+				this.dialog = false;
+				setTimeout(this.resetForm, 500);
+			},
+			createNew() {
+				this.createPosition();
+				this.close();
+			},
+			async createPosition() {
+				await this.$apollo.mutate({
+					mutation: CreatePositionMutation,
+					variables: {
+						input: {
+							entry_date: this.entry_date,
+							entry_price: parseFloat(this.entry_price),
+							exit_price: parseFloat(this.exit_price),
+							stop_loss: parseFloat(this.stop_loss),
+							action: this.action_type
+						}
+					}
+				});
+			},
+			saveChanges() {
+				this.updatePosition();
+				this.close();
+			},
+			async updatePosition() {
+				await this.$apollo.mutate({
+					mutation: UpdatePositionMutation,
+					variables: {
+						positionId: this.positionId,
+						input: {
+							entry_date: this.entry_date,
+							entry_price: parseFloat(this.entry_price),
+							exit_price: parseFloat(this.exit_price),
+							stop_loss: parseFloat(this.stop_loss),
+							action: this.action_type
+						}
+					}
+				});
+			},
+			deleteItem(item) {
+				const positionId = item._id;
+				this.deletePosition(positionId);
+			},
+			async deletePosition(positionId) {
+				await this.$apollo.mutate({
+					mutation: DeletePositionMutation,
+					variables: {
+						positionId
+					}
+				});
+			}
+		}
+	};
 </script>
 
 <style scoped>
