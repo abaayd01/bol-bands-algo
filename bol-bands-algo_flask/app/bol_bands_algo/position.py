@@ -2,9 +2,9 @@ import json
 
 
 class Position:
-    '''
+    """
         Create an empty position
-    '''
+    """
 
     def __init__(self,
                  entry_price=None,
@@ -65,8 +65,8 @@ class Position:
         current_bol_lower = last_price_data["bol_lower"]
         current_bol_upper = last_price_data["bol_upper"]
 
-        if (self.is_open):
-            if (self.action == 'BUY'):
+        if self.is_open:
+            if self.action == 'BUY':
                 new_exit_price = current_bol_upper
                 new_stop_loss = current_moving_average * \
                     (1 - stop_loss_percent)
@@ -80,19 +80,19 @@ class Position:
                 self.stop_loss = new_stop_loss
 
     def evaluate(self, price, date):
-        if (self.action == 'BUY'):
+        if self.action == 'BUY':
             self.evaluate_buy(price, date)
 
         else:
             self.evaluate_sell(price, date)
 
-        if (not self.is_open):
+        if not self.is_open:
             self.outcome = 'win' if self.percentage_profit > 0 else 'lose'
 
     def evaluate_buy(self, price, date):
         # if the new target exit price drops below the entry price
         # due to extreme trend movement.
-        if (self.exit_price <= self.entry_price):
+        if self.exit_price <= self.entry_price:
             # close the trade at entry price
             self.close_position(date)
             self.percentage_profit = self.calculate_profit(
@@ -100,14 +100,14 @@ class Position:
 
         else:
             # if we hit the exit price
-            if (price >= self.exit_price):
+            if price >= self.exit_price:
                 # close the trade at exit price
                 self.close_position(date)
                 self.percentage_profit = self.calculate_profit(
                     self.entry_price, self.exit_price, self.action)
 
             # else if we hit the stop_loss
-            elif (price <= self.stop_loss):
+            elif price <= self.stop_loss:
                 # close the trade at stop_loss price
                 self.close_position(date)
                 self.percentage_profit = self.calculate_profit(
@@ -116,7 +116,7 @@ class Position:
     def evaluate_sell(self, price, date):
         # if the new target exit price exceeds the entry price
         # due to extreme trend movement.
-        if (self.exit_price >= self.entry_price):
+        if self.exit_price >= self.entry_price:
             # close the trade at entry price
             self.close_position(date)
             self.percentage_profit = self.calculate_profit(
@@ -124,14 +124,14 @@ class Position:
 
         else:
             # if we hit the exit price
-            if (price <= self.exit_price):
+            if price <= self.exit_price:
                 # close the trade at exit price
                 self.close_position(date)
                 self.percentage_profit = self.calculate_profit(
                     self.entry_price, self.exit_price, self.action)
 
             # else if we hit the stop_loss
-            elif (price >= self.stop_loss):
+            elif price >= self.stop_loss:
                 # close the trade at stop_loss price
                 self.close_position(date)
                 self.percentage_profit = self.calculate_profit(
@@ -142,11 +142,10 @@ class Position:
         self.exit_date = date
 
     def calculate_profit(self, entry_price, close_price, action):
-        if (action == 'BUY'):
+        self.close_price = close_price
+        if action == 'BUY':
             profit = (close_price - entry_price) / entry_price
-            self.close_price = close_price
         else:
             profit = (entry_price - close_price) / entry_price
-            self.close_price = close_price
 
         return profit
