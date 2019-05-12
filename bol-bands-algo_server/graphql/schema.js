@@ -3,6 +3,7 @@ import {merge} from 'lodash';
 import {GraphQLDateTime} from 'graphql-iso-date'
 import {typeDefs as Position, resolvers as positionResolver} from './modules/position.module';
 import {typeDefs as PriceSnapshot, resolvers as priceSnapshotResolver} from './modules/priceSnapshot.module';
+import {typeDefs as PriceEvaluation, resolvers as priceEvaluationResolver} from './modules/priceEvaluation.module';
 
 const rootTypeDefs = `
     scalar DateTime
@@ -21,6 +22,6 @@ const rootResolver = {
 };
 
 export const schema = makeExecutableSchema({
-	typeDefs: [rootTypeDefs, Position, PriceSnapshot],
-	resolvers: merge(rootResolver, positionResolver, priceSnapshotResolver)
+	typeDefs: [rootTypeDefs, Position, PriceSnapshot, PriceEvaluation],
+	resolvers: merge(rootResolver, positionResolver, priceSnapshotResolver, priceEvaluationResolver)
 });

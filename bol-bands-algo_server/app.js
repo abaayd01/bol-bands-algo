@@ -18,10 +18,11 @@ const mongoose = require('mongoose');
 const expressValidator = require('express-validator');
 const expressStatusMonitor = require('express-status-monitor');
 
-const cron = require('node-cron');
-
-const cryptoCompareInterface = require('@lib/CryptoCompareInterface');
-const priceEvaluationTaskRunner = require('@lib/PriceEvaluationTaskRunner');
+// const cron = require('node-cron')
+// ;
+//
+// const cryptoCompareInterface = require('@lib/CryptoCompareInterface');
+// const priceEvaluationTaskRunner = require('@lib/PriceEvaluationTaskRunner');
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
  */
@@ -109,7 +110,7 @@ if (process.env.NODE_ENV === 'development') {
 // cron.schedule("0 0 */1 * *", async () => {
 	// await priceEvaluationTaskRunner.evaluatePrice();
 // });
-priceEvaluationTaskRunner.evaluatePrice();
+// priceEvaluationTaskRunner.evaluatePrice();
 
 /**
  * Start Express server.

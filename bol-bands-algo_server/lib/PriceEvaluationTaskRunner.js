@@ -10,42 +10,10 @@ const evaluatePrice = async () => {
 			currentPrice
 		);
 
-		// console.log('flaskAppResponse', flaskAppResponse);
 		const priceEvaluation = flaskAppResponse.data;
+		const newPriceEvaluation = new PriceEvaluation({...priceEvaluation});
 
-		if (priceEvaluation !== null) {
-			let newPriceEvaluation = new PriceEvaluation({...priceEvaluation});
-			newPriceEvaluation.save(error => {
-				if (error) {
-					return error
-				} else {
-					console.log('price evaluation saved!');
-					console.log(newPriceEvaluation)
-				}
-			})
-		} else {
-			console.log('no action');
-			// let newPriceEvaluation = new PriceEvaluation({
-			// 	action: 'NO_ACTION',
-			// 	eval_price: currentPrice,
-			// 	entry_date: null,
-			// 	entry_price: null,
-			// 	exit_date: null,
-			// 	exit_price: null,
-			// 	is_open: false,
-			// 	outcome: null,
-			// 	percentage_profit: null,
-			// 	stop_loss: null
-			// });
-			// newPriceEvaluation.save(error => {
-			// 	if (error) {
-			// 		return error
-			// 	} else {
-			// 		console.log('no action price evaluation saved!');
-			// 		console.log(newPriceEvaluation)
-			// 	}
-			// })
-		}
+		return await newPriceEvaluation.save();
 	} catch (err) {
 		console.log(err)
 	}
