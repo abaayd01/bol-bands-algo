@@ -30,7 +30,9 @@ def evaluate_price(price_df, current_price):
     # print ('Trend', get_trend(last_moving_ave_smooth))
     # print (last_price_data['bol_upper'])
     # print (last_price_data['bol_lower'])
-    # print (last_moving_ave)
+    last_ma_dy = last_price_data["ma_dy"]
+    # print('last_price_data')
+    # print(last_price_data)
 
     if get_trend(last_moving_ave_smooth) == Trend.UP:
         # upwards trend mode

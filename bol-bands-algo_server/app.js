@@ -21,7 +21,7 @@ const expressStatusMonitor = require('express-status-monitor');
 const cron = require('node-cron')
 // ;
 //
-// const cryptoCompareInterface = require('@lib/CryptoCompareInterface');
+const cryptoCompareInterface = require('@lib/CryptoCompareInterface');
 const priceEvaluationTaskRunner = require('@lib/PriceEvaluationTaskRunner');
 /**
  * Load environment variables from .env file, where API keys and passwords are configured.
@@ -100,9 +100,9 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // run once a day
-// cron.schedule("0 0 * * *", async () => {
-// 	await cryptoCompareInterface.takeSnapshot();
-// });
+cron.schedule("0 0 * * *", async () => {
+	await cryptoCompareInterface.takeSnapshot();
+});
 
 // run once every hour
 // run once every hour

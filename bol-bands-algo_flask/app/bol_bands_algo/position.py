@@ -69,13 +69,13 @@ class Position:
             if self.action == 'BUY':
                 new_exit_price = current_bol_upper
                 new_stop_loss = current_moving_average * \
-                    (1 - stop_loss_percent)
+                                (1 - stop_loss_percent)
                 self.exit_price = new_exit_price
                 self.stop_loss = new_stop_loss
             else:
                 new_exit_price = current_bol_lower
                 new_stop_loss = current_moving_average * \
-                    (1 + stop_loss_percent)
+                                (1 + stop_loss_percent)
                 self.exit_price = new_exit_price
                 self.stop_loss = new_stop_loss
 

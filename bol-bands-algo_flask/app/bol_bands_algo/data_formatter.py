@@ -1,8 +1,8 @@
-import pandas as pd
 import numpy as np
 
 
 def format_data(data_frame):
+    data_frame = data_frame.sort_values(by=['date'])
     window_size = 10
     bol_multiplier = 2
 
