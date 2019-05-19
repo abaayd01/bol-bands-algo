@@ -1,0 +1,7 @@
+fragment priceSnapshot on PriceSnapshot {
+    _id
+    marketcap
+    price
+    volume
+    date
+}

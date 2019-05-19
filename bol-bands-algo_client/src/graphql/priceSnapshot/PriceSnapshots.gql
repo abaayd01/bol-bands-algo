@@ -1,0 +1,7 @@
+#import "./PriceSnapshotFragment.gql"
+
+query {
+    priceSnapshots {
+        ...priceSnapshot
+    }
+}

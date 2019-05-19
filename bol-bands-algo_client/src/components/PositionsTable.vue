@@ -1,5 +1,5 @@
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
-    <div>
+    <v-container mt-2>
         <v-toolbar flat>
             <v-toolbar-title>Positions</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
@@ -45,7 +45,7 @@
             </v-dialog>
         </v-toolbar>
 
-        <v-data-table :headers="headers" :items="positions">
+        <v-data-table :headers="headers" :items="positions" :pagination.sync="pagination">
             <template v-slot:items="props">
                 <td>{{ props.item.entry_date | moment('YYYY-MM-DD hh:mm') }}</td>
                 <td>{{ props.item.entry_price }}</td>
@@ -58,7 +58,7 @@
                 </td>
             </template>
         </v-data-table>
-    </div>
+    </v-container>
 </template>
 
 <script>
@@ -161,7 +161,12 @@
 			entry_price: 0,
 			exit_price: 0,
 			stop_loss: 0,
-			action_type: "BUY" // BUY, SELL
+			action_type: "BUY", // BUY, SELL
+			pagination: {
+				rowsPerPage: 5,
+				sortBy: 'entry_date',
+				descending: true
+			}
 		}),
 		methods: {
 			resetForm() {

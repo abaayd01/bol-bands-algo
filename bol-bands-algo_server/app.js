@@ -6,7 +6,6 @@ import cors from 'cors'
 
 import {ApolloServer} from 'apollo-server-express'
 import {schema} from './graphql/schema'
-import Position from './models/Position';
 
 const express = require('express');
 const compression = require('compression');
@@ -105,14 +104,10 @@ cron.schedule("0 0 * * *", async () => {
 });
 
 // run once every hour
-// run once every hour
 cron.schedule("0 0 */1 * *", async () => {
 	await priceEvaluationTaskRunner.evaluatePrice();
 });
 priceEvaluationTaskRunner.evaluatePrice();
-// Position.findOne().sort({'entry_date': 'descending'}).exec().then(async currentPosition => {
-// 	await priceEvaluationTaskRunner.evaluatePosition(currentPosition);
-// });
 
 /**
  * Start Express server.

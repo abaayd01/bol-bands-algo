@@ -18,7 +18,7 @@ export const typeDefs = gql`
 
 export const resolvers = {
 	Query: {
-		priceSnapshots: async () => await PriceSnapshot.find({})
+		priceSnapshots: async () => await PriceSnapshot.find({}).sort({date: -1})
 	},
 
 	Mutation: {},
