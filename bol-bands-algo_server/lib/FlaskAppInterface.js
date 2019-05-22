@@ -49,3 +49,24 @@ const evaluatePosition = async (price, position) => {
 	}
 };
 exports.evaluatePosition = evaluatePosition;
+
+const getMeta = async () => {
+	try {
+		const response = await axios.post(
+			`${process.env.FLASK_BASE_URL}/meta`
+		);
+
+		return {
+			success: true,
+			data: response.data
+		}
+	} catch (err) {
+		console.log(err);
+		return {
+			success: false,
+			data: null,
+			err
+		}
+	}
+};
+exports.getMeta = getMeta;

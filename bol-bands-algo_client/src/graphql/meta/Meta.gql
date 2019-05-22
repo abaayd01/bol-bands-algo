@@ -1,0 +1,8 @@
+query {
+    meta {
+        price
+        moving_average
+        bol_lower
+        bol_upper
+    }
+}

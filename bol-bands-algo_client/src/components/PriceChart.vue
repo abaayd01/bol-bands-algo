@@ -1,10 +1,8 @@
 <template>
-    <GChart
-            type="LineChart"
-            :data="chartData"
-            :options="chartOptions"
-            class="price-chart"
-    />
+    <v-container>
+        <div class="tradingview" id="tradingview" ref="chart-container">
+        </div>
+    </v-container>
 </template>
 
 <script>
@@ -40,6 +38,29 @@
 				}
 				return [dataHeadings];
 			}
+		},
+		mounted() {
+			// eslint-disable-next-line no-undef
+			new TradingView.widget(
+				{
+					"width": 980,
+					"height": 610,
+					"symbol": "ETHUSD",
+					"interval": "D",
+					"timezone": "Etc/UTC",
+					"theme": "Light",
+					"style": "1",
+					"locale": "en",
+					"toolbar_bg": "#f1f3f6",
+					"enable_publishing": false,
+					"allow_symbol_change": true,
+					"container_id": "tradingview"
+				}
+			);
+
+			const tradingviewWrapper = this.$refs['chart-container'].querySelector("[id^='tradingview']");
+			tradingviewWrapper.style.marginLeft = '0';
+			// console.log(tradingviewWrapper);
 		}
 	};
 </script>
@@ -47,6 +68,9 @@
 <style scoped lang="scss">
     .price-chart {
         height: 100%;
-        padding: 50px;
     }
+
+    /*/deep/ .tradingview > div {*/
+    /*    margin-left: 0 !important;*/
+    /*}*/
 </style>

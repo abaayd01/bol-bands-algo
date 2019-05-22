@@ -13,6 +13,7 @@ import 'vuetify/dist/vuetify.min.css' // Ensure you are using css-loader
 import DatetimePicker from "vuetify-datetime-picker";
 import VueMoment from 'vue-moment';
 import VueGoogleCharts from 'vue-google-charts';
+import numeral from 'numeral';
 
 Vue.config.productionTip = false;
 
@@ -28,9 +29,7 @@ const wsLink = new WebSocketLink({
 });
 
 const link = split(({query}) => {
-		const {kind, operation} = getMainDefinition(query);
-		return kind === "OperationDefinition" && operation === "subscription";
-	},
+		const {kind, operation} = getMainDefinition(query); return kind === "OperationDefinition" && operation === "subscription"; },
 	wsLink,
 	httpLink
 );
@@ -51,6 +50,14 @@ Vue.use(Vuetify);
 Vue.use(DatetimePicker);
 Vue.use(VueMoment);
 Vue.use(VueGoogleCharts);
+
+Vue.filter('formatNumber', function (value) {
+	return numeral(value).format('0,0.00');
+});
+
+Vue.filter('formatCurrency', function (value) {
+	return '$' + numeral(value).format('0,0.00');
+});
 
 new Vue({
 	apolloProvider,

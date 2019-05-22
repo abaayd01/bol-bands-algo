@@ -47,8 +47,24 @@ def evaluate_position():
     return jsonify(result)
 
 
-@bp.route('/test', methods=('GET', 'POST'))
-def test():
+@bp.route('/meta', methods=('GET', 'POST'))
+def meta():
+    mongo = get_db()
+    historical_price_data = mongo.db.priceSnapshots.find().sort(
+        'date', pymongo.DESCENDING)[1:50]
+
+    price_df = bol_bands_algo.create_df(historical_price_data)
+
+    latest_price_snapshot = price_df.iloc[-1]
+
+    last_price = latest_price_snapshot["price"]
+    last_moving_average = latest_price_snapshot["ma"]
+    last_bol_lower = latest_price_snapshot["bol_lower"]
+    last_bol_upper = latest_price_snapshot["bol_upper"]
+
     return jsonify({
-        'message': 'hello from flask!'
+        'price': last_price,
+        'moving_average': last_moving_average,
+        'bol_lower': last_bol_lower,
+        'bol_upper': last_bol_upper,
     })
