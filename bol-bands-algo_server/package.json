@@ -14,7 +14,9 @@
     "start:dev": "nodemon index.js",
     "test": "nyc mocha --timeout=10000 --exit",
     "lint": "eslint \"**/*.js\"",
-    "format": "standard --fix"
+    "format": "standard --fix",
+    "db:seed": "node database/seed.js",
+    "db:clean": "node database/clean.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.7.2",

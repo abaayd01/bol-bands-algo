@@ -33,3 +33,17 @@ const takeSnapshot = async () => {
 	})
 };
 exports.takeSnapshot = takeSnapshot;
+
+const fetchHistoricalDailyPriceData = async countOfRecords => {
+	try {
+		const response = await axios.get(
+			`${process.env.CRYPTO_COMPARE_URL}/histoday?fsym=ETH&tsym=USD&limit=${countOfRecords}`
+		);
+
+		return response.data
+	} catch (err) {
+		console.error(err);
+		return err;
+	}
+};
+exports.fetchHistoricalDailyPriceData = fetchHistoricalDailyPriceData;

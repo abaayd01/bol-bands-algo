@@ -17,7 +17,7 @@ const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const expressValidator = require('express-validator');
 const expressStatusMonitor = require('express-status-monitor');
-const cron = require('node-cron')
+const cron = require('node-cron');
 // ;
 //
 const cryptoCompareInterface = require('@lib/CryptoCompareInterface');
