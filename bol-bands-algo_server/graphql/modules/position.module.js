@@ -10,52 +10,52 @@ const POSITION_UPDATED = 'POSITION_UPDATED';
 
 // position.module.js
 export const typeDefs = gql`
-    input PositionInput {
-        entry_price: Float
-        exit_price: Float
-        stop_loss: Float
-        action: String
-        entry_date: DateTime
-        exit_date: DateTime
-        percentage_profit: Float
-        is_open: Boolean
-        outcome: String
-    }
+	input PositionInput {
+		entry_price: Float
+		exit_price: Float
+		stop_loss: Float
+		action: String
+		entry_date: DateTime
+		exit_date: DateTime
+		percentage_profit: Float
+		is_open: Boolean
+		outcome: String
+	}
 
-    type PositionId {
-        _id: String
-    }
+	type PositionId {
+		_id: String
+	}
 
-    type Position {
-        _id: String
-        entry_price: Float
-        exit_price: Float
-        stop_loss: Float
-        action: String
-        entry_date: DateTime
-        exit_date: DateTime
-        percentage_profit: Float
-        is_open: Boolean
-        outcome: String
-    }
+	type Position {
+		_id: String
+		entry_price: Float
+		exit_price: Float
+		stop_loss: Float
+		action: String
+		entry_date: DateTime
+		exit_date: DateTime
+		percentage_profit: Float
+		is_open: Boolean
+		outcome: String
+	}
 
-    extend type Query {
-        positions: [Position]
-        position(positionId: String): Position
-    }
+	extend type Query {
+		positions: [Position]
+		position(positionId: String): Position
+	}
 
-    type Mutation {
-        createPosition(input: PositionInput): Position
-        updatePosition(positionId: String, input: PositionInput): Position
+	type Mutation {
+		createPosition(input: PositionInput): Position
+		updatePosition(positionId: String, input: PositionInput): Position
 
-        deletePosition(positionId: String): PositionId
-    }
+		deletePosition(positionId: String): PositionId
+	}
 
-    type Subscription {
-        positionAdded: Position
-        positionUpdated: Position
-        positionDeleted: PositionId
-    }
+	type Subscription {
+		positionAdded: Position
+		positionUpdated: Position
+		positionDeleted: PositionId
+	}
 `
 
 export const resolvers = {
@@ -91,7 +91,7 @@ export const resolvers = {
 				{
 					...input
 				},
-				{new: true})
+				{new: true});
 
 			pubSub.publish(POSITION_UPDATED, {
 				positionUpdated: updatedPosition

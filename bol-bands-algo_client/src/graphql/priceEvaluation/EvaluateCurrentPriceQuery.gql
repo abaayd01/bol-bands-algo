@@ -1,0 +1,7 @@
+#import "./PriceEvaluationFragment.gql"
+
+query EvaluateCurrentPrice {
+    evaluateCurrentPrice {
+        ...priceEvaluation
+    }
+}

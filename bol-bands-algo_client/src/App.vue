@@ -8,6 +8,9 @@
                         <price-chart></price-chart>
                     </v-flex>
                     <v-flex shrink pl-2>
+                        <v-layout justify-center>
+                            <button-evaluate-price></button-evaluate-price>
+                        </v-layout>
                         <price-evaluations-table></price-evaluations-table>
                     </v-flex>
                 </v-layout>
@@ -21,6 +24,7 @@
 	import MetaTable from "./components/MetaTable";
 	import PriceEvaluationsTable from "./components/PriceEvaluationsTable.vue";
 	import PriceChart from "./components/PriceChart";
+	import ButtonEvaluatePrice from "./components/ButtonEvaluatePrice";
 
 	export default {
 		name: "App",
@@ -28,7 +32,8 @@
 			PositionsTable,
 			MetaTable,
 			PriceEvaluationsTable,
-			PriceChart
+			PriceChart,
+			ButtonEvaluatePrice
 		},
 		data: () => ({
 			isLoading: false

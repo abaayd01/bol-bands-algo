@@ -5,6 +5,7 @@ import gql from 'graphql-tag';
 export const typeDefs = gql`
 	type Meta {
 		price: Float
+		moving_average_slope: Float
 		moving_average: Float
 		bol_lower: Float
 		bol_upper: Float

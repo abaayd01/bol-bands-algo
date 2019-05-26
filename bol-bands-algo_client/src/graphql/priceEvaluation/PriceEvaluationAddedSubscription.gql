@@ -1,0 +1,7 @@
+#import "./PriceEvaluationFragment.gql"
+
+subscription PriceEvaluationAdded {
+    priceEvaluationAdded {
+        ...priceEvaluation
+    }
+}

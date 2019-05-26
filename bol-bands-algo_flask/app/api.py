@@ -59,12 +59,14 @@ def meta():
 
     last_price = latest_price_snapshot["price"]
     last_moving_average = latest_price_snapshot["ma"]
+    last_moving_average_slope = latest_price_snapshot["ma_dy_smooth"]
     last_bol_lower = latest_price_snapshot["bol_lower"]
     last_bol_upper = latest_price_snapshot["bol_upper"]
 
     return jsonify({
         'price': last_price,
         'moving_average': last_moving_average,
+        'moving_average_slope': last_moving_average_slope,
         'bol_lower': last_bol_lower,
         'bol_upper': last_bol_upper,
     })

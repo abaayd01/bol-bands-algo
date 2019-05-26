@@ -2,6 +2,7 @@ query {
     meta {
         price
         moving_average
+        moving_average_slope
         bol_lower
         bol_upper
     }

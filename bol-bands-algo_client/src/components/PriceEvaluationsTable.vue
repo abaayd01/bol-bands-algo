@@ -16,12 +16,32 @@
 </template>
 
 <script>
+	import PriceEvaluationAddedSubscription from "../graphql/priceEvaluation/PriceEvaluationAddedSubscription.gql";
 	import PriceEvaluationsQuery from "../graphql/priceEvaluation/PriceEvaluations.gql";
 
 	export default {
 		apollo: {
 			priceEvaluations: {
-				query: PriceEvaluationsQuery
+				query: PriceEvaluationsQuery,
+				update(queryData) {
+					return queryData.priceEvaluations;
+				},
+				subscribeToMore: [
+					{
+						document: PriceEvaluationAddedSubscription,
+						updateQuery: (previous, {subscriptionData}) => {
+							const newPriceEvaluations = [
+                                ...previous.priceEvaluations,
+                                subscriptionData.data.priceEvaluationAdded
+                            ];
+
+							return {
+								...previous,
+                                priceEvaluations: newPriceEvaluations
+                            }
+						}
+					}
+				]
 			}
 		},
 		data: () => ({
@@ -32,11 +52,11 @@
 				{text: "Stop Loss", value: "stop_loss"},
 				{text: "Action", value: "Action"},
 			],
-            pagination: {
+			pagination: {
 				rowsPerPage: 10,
-                sortBy: 'date',
-                descending: true
-            }
+				sortBy: 'date',
+				descending: true
+			}
 		})
 	};
 </script>
