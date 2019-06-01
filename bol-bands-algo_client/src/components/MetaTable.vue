@@ -8,7 +8,7 @@
             <div class="caption">Price</div>
             <div class="headline">{{meta.price | formatCurrency}}</div>
         </div>
-        <div :class="['key-metric', isLowerHighlighted && 'highlighted']">
+        <div class="key-metric">
             <div class="caption">Bol. Lower</div>
             <div class="headline">{{meta.bol_lower | formatCurrency}}</div>
         </div>
@@ -16,7 +16,7 @@
             <div class="caption">Moving Average</div>
             <div class="headline">{{meta.moving_average | formatCurrency}}</div>
         </div>
-        <div :class="['key-metric', isUpperHighlighted && 'highlighted']">
+        <div class="key-metric">
             <div class="caption">Bol. Upper</div>
             <div class="headline">{{meta.bol_upper | formatCurrency}}</div>
         </div>

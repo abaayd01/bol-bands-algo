@@ -20,6 +20,7 @@ services:
         environment:
             - MONGODB_URI=${MONGODB_URI}
             - FLASK_BASE_URL=http://flask:8000/api
+            - CRYPTO_COMPARE_URL=https://min-api.cryptocompare.com/data
         links:
             - mongo
             - flask
