@@ -62,7 +62,7 @@
     "request": "^2.88.0",
     "subscriptions-transport-ws": "^0.9.16",
     "tar": "^4.4.8",
-    "validator": "^10.11.0"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
